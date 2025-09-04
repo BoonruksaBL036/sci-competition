@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "./db.js";
 
-const Activty = sequelize.define("activty", {
+const Activity = sequelize.define("activity", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -10,6 +10,7 @@ const Activty = sequelize.define("activty", {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
+    trim: true,
   },
   description: {
     type: DataTypes.STRING,
@@ -26,6 +27,7 @@ const Activty = sequelize.define("activty", {
   team_size: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    min: 1,
   },
   date: {
     type: DataTypes.DATE,
@@ -54,14 +56,17 @@ const Activty = sequelize.define("activty", {
   contact_email: {
     type: DataTypes.STRING,
     allowNull: false,
+    required: true,
+    match: [/^\w+([\.-]?)@\w+([\.-]?\w+)(\.\w(2,3))+$/],
   },
   status: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM("draft", "open", "closed", "in_progress", "completed"),
     allowNull: false,
-  }
+    default: "draft",
+  },
 });
 
-Activty.sync({ force: false })
+Activity.sync({ force: false })
   .then(() => {
     console.log("Table created or already exists");
   })
@@ -69,4 +74,4 @@ Activty.sync({ force: false })
     console.log("Error creating table", error);
   });
 
-export default Activty;
+export default Activity;

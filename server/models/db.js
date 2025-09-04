@@ -7,10 +7,11 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   dialect: dbConfig.dialect,
   logging: false,
   dialectOptions: {
-    ssl: {
-      required: true,
-      rejectUnauthorized: false,
-    },
+    // ssl:{
+    //   required: true,
+    //   rejectUnauthorized: false,
+    // }
+    ssl: false,
   },
 });
 
