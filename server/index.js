@@ -1,4 +1,5 @@
 import express from "express";
+import activityRouter from "./routers/activity.router.js"
 import db from "./models/index.js";
 import authRouter from "./routers/auth.router.js";
 import dotenv from "dotenv";
@@ -11,6 +12,7 @@ db.sequelize.sync({ force: false }).then(() => {
 });
 
 import cors from "cors"
+import activtyController from "./controllers/activity.controller.js";
 
 const app =  express();
 app.use(express.json());
@@ -29,6 +31,7 @@ app.get("/hello",(req, res) => {
 });
 
 //use authentication router
+app.use("/api/v1/activity", activityRouter)
 app.use("/api/v1/auth", authRouter);
 
 app.listen(PORT,() => {
