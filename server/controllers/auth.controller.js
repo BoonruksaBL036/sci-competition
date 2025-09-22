@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import authComfig from "../config/auth.config.js";
+import authConfig from "../config/auth.config.js";
 import db from "../models/index.js";
 import VerificationToken from "../models/verificationToken.model.js";
 import crypto from "crypto";
@@ -127,7 +127,7 @@ const verifyEmail = async (req, res) => {
     const htmlPath = path.join(
       process.cwd(),
       "views",
-      "verification.success.html"
+      "verification-success.html"
     );
     res.sendFile(htmlPath);
   } catch (error) {
@@ -137,8 +137,60 @@ const verifyEmail = async (req, res) => {
   }
 };
 
+const signIn = async (req,res) => {
+  const {email,password} = req.body;
+try{
+  if(!email || !password){
+    return res.status(400).send({message:"Email and password are required!"});
+  }
+
+  const user = await User.findOne({
+    where: {email},
+  });
+  if(!user){
+    return res.status(404).send({message:"User not fround!"});
+  }
+  const passwordIsvalid = await user.comparePassword(password);
+  if(!passwordIsvalid){
+    return res.status(401).send({message:"Invalid password"})
+  }
+
+  if(user.type === "teacher" && !user.isVerified){
+    return res.status(403).send ({message: "Please verify your email to activate your account"})
+  }
+  
+  const token = jwt.sign({id:user,id}, authConfig.secret,{
+    expiredIn: 24*60*60*1000,//86400
+  });
+
+  const userData = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    type: user.type,
+  };
+  if(user.type === "teacher"){
+    userData.isVerified = user.isVerified;
+    userData.phone = user.phone;
+    userData.school = user.school;
+  }
+
+  return res.status(200).send({
+      message: "Login successfully",
+      user: userData,
+      accessToken:token,
+    });
+  }catch (error){
+    return res.status(500).send({
+      message:error.message || "Some error occurred while logging in user",
+    });
+  }
+};
+
+
 const authController = {
   signUp,
+  signIn,
   verifyEmail,
 };
 
