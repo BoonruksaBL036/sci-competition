@@ -137,56 +137,59 @@ const verifyEmail = async (req, res) => {
   }
 };
 
-const signIn = async (req,res) => {
-  const {email,password} = req.body;
-try{
-  if(!email || !password){
-    return res.status(400).send({message:"Email and password are required!"});
-  }
+const signIn = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    if (!email || !password) {
+      return res
+        .status(400)
+        .send({ message: "Email and password are required!" });
+    }
 
-  const user = await User.findOne({
-    where: {email},
-  });
-  if(!user){
-    return res.status(404).send({message:"User not fround!"});
-  }
-  const passwordIsvalid = await user.comparePassword(password);
-  if(!passwordIsvalid){
-    return res.status(401).send({message:"Invalid password"})
-  }
+    const user = await User.findOne({
+      where: { email },
+    });
+    if (!user) {
+      return res.status(404).send({ message: "User not fround!" });
+    }
+    const passwordIsvalid = await user.comparePassword(password);
+    if (!passwordIsvalid) {
+      return res.status(401).send({ message: "Invalid password" });
+    }
 
-  if(user.type === "teacher" && !user.isVerified){
-    return res.status(403).send ({message: "Please verify your email to activate your account"})
-  }
-  
-  const token = jwt.sign({id:user,id}, authConfig.secret,{
-    expiredIn: 24*60*60*1000,//86400
-  });
+    if (user.type === "teacher" && !user.isVerified) {
+      return res
+        .status(403)
+        .send({ message: "Please verify your email to activate your account" });
+    }
 
-  const userData = {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    type: user.type,
-  };
-  if(user.type === "teacher"){
-    userData.isVerified = user.isVerified;
-    userData.phone = user.phone;
-    userData.school = user.school;
-  }
+    const token = jwt.sign({ id: user.id }, authConfig.secret, {
+      expiresIn: 24 * 60 * 60, //86400 sec = 24h
+    });
 
-  return res.status(200).send({
+    const userData = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      type: user.type,
+    };
+    if (user.type === "teacher") {
+      userData.isVerified = user.isVerified;
+      userData.phone = user.phone;
+      userData.school = user.school;
+    }
+
+    return res.status(200).send({
       message: "Login successfully",
       user: userData,
-      accessToken:token,
+      accessToken: token,
     });
-  }catch (error){
+  } catch (error) {
     return res.status(500).send({
-      message:error.message || "Some error occurred while logging in user",
+      message: error.message || "Some error occurred while logging in user",
     });
   }
 };
-
 
 const authController = {
   signUp,

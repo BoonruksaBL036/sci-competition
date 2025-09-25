@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import AuthService from "../service/auth.service";
+import AuthService from "../services/auth.service";
 import { useNavigate } from "react-router";
 import swal from "sweetalert2";
+// import { useAuthContext } from "../context/AuthContext.jsx";
 import { useAuthContext } from "../context/AuthContext";
 
 const Login = () => {
@@ -10,28 +11,28 @@ const Login = () => {
     password: "",
   });
 
-   const navigate = useNavigate();
-   const { login, user } = useAuthContext();
+  const navigate = useNavigate();
+  const { login, user } = useAuthContext();
 
-    useEffect(() => {
+  useEffect(() => {
     if (user) {
-        navigate("/");
+      navigate("/");
     }
-    }, [user]);
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLogInData({ ...logInData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     try {
       const currentUser = await AuthService.login(
         logInData.email,
         logInData.password
       );
-      if(currentUser.status === 200){
+      console.log (currentUser);
+      if (currentUser.status === 200) {
         swal
           .fire({
             icon: "success",
@@ -39,7 +40,7 @@ const Login = () => {
             text: currentUser?.data?.message,
           })
           .then(() => {
-            login(currentUser.data)
+            login(currentUser.data);
             navigate("/");
           });
       }
@@ -52,7 +53,7 @@ const Login = () => {
     <div className="flex items-center justify-center min-h-screen">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
         <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
-        <form onSubmit={handleSubmit}>
+        <div>
           {/* Email Field */}
           <div className="mb-4">
             <label
@@ -96,10 +97,11 @@ const Login = () => {
           <button
             type="submit"
             className="w-full py-2 bg-blue-500 text-white font-bold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onClick={handleSubmit}
           >
             Login
           </button>
-        </form>
+        </div>
       </div>
     </div>
   );

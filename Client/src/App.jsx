@@ -1,6 +1,6 @@
+// import { RouterProvider } from 'react-router';
 import { RouterProvider } from 'react-router';
 import './App.css'
-import { MainLayout } from './layouts/MainLayout';
 import router from './routers/index.jsx';
 
 function App() {

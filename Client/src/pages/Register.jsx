@@ -5,6 +5,7 @@ const Register = () => {
     email: "",
     name: "",
     password: "",
+    
     school: "",
     phone: "",
   });
@@ -20,7 +21,6 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
-    // TODO: Add API call here
   };
 
   return (
@@ -121,7 +121,6 @@ const Register = () => {
               className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your phone number"
             />
-            <input type="text" name="type" value="teacher" className="hidden" />
           </div>
 
           {/* Submit */}
