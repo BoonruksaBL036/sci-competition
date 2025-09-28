@@ -13,7 +13,6 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     //recieve after logged in
-    //TODO
     const token = TokenService.getLocalAccessToken();
     if (token) {
       config.headers["x-access-token"] = token;
