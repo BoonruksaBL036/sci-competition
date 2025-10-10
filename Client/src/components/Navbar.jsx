@@ -7,20 +7,12 @@ const NavBar = () => {
 
   const menuItems = [
     {
-      name: "News",
-      url: "/news",
-    },
-    {
       name: "Activities",
       url: "/activities",
     },
     {
       name: "Add new activity",
       url: "/add-activity",
-    },
-    {
-      name: "About Us",
-      url: "/",
     },
   ];
 

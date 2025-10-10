@@ -2,18 +2,18 @@ import Activity from "../models/activity.model.js";
 const activtyController = {};
 
 activtyController.createActivity = async (req, res) => {
-  const {name, description, type, level, tem_size, data, location, req_open, contact_name,contact_email, contact_phone,status } = req.body;
+  const {name, description, type, level, team_size, date, location, reg_open, reg_close, contact_name,contact_email, contact_phone,status } = req.body;
 
   if (
-    (!name || !description || !type || !level || !tem_size || !data || !location || !req_open || !contact_name || !contact_email || !contact_phone || !status)
+    (!name || !description || !type || !level || !team_size || !date || !location || !reg_open || !reg_close || !contact_name || !contact_email || !contact_phone || !status)
   ) {
     res.status(400).send({ message: "Data can not be empty"});
     return;
   }
 
-  await Activity.findOne({ Where: {name:name}}).then((ac)=>{
+  await Activity.findOne({ where: {name:name}}).then((ac)=>{
     if(ac){
-        res.status(400).send ({ message: "Activity already exists!" });
+        return res.status(400).send ({ message: "Activity already exists!" });
     }
 
     const newActivity = {
@@ -21,18 +21,19 @@ activtyController.createActivity = async (req, res) => {
       description,
       type,
       level,
-      tem_size,
-      data,
+      team_size,
+      date,
       location,
-      req_open,
+      reg_open,
+      reg_close,
       contact_name,
       contact_email,
       contact_phone,
       status,
     };
 
-    Activity.createActivity(newActivity).then((data)=>{
-        res.send(data)
+    Activity.create(newActivity).then((data)=>{
+         return res.status(201).send(data)
     }).catch((err)=>{
         res.status(500).send({ message: err.message || "Something error"})
     });
@@ -41,7 +42,7 @@ activtyController.createActivity = async (req, res) => {
 
 activtyController.getAll = async (req,res) => {
     await Activity.findAll().then((data)=>{
-        res.send(data);
+        return res.send(data);
     }).catch((err)=>{
         res.status(500).send({ message: err.message })
     })
@@ -64,10 +65,11 @@ activtyController.update = async (req, res) => {
       description,
       type,
       level,
-      tem_size,
-      data,
+      team_size,
+      date,
       location,
-      req_open,
+      reg_open,
+      reg_close,
       contact_name,
       contact_email,
       contact_phone,
@@ -79,10 +81,11 @@ activtyController.update = async (req, res) => {
       !description &&
       !type &&
       !level &&
-      !tem_size &&
-      !data &&
+      !team_size &&
+      !date &&
       !location &&
-      !req_open &&
+      !reg_open &&
+      !reg_close&&
       !contact_name &&
       !contact_email &&
       !contact_phone &&
@@ -97,10 +100,11 @@ activtyController.update = async (req, res) => {
       description,
       type,
       level,
-      tem_size,
-      data,
+      team_size,
+      date,
       location,
-      req_open,
+      reg_open,
+      reg_close,
       contact_name,
       contact_email,
       contact_phone,
@@ -110,9 +114,9 @@ activtyController.update = async (req, res) => {
     await Activity.update(newActivity, { where: { id } })
     .then((num) => {
         if (num[0] === 1) {
-            res.send({ message: "Update success!" })
+            return res.send({ message: "Update success!" })
         } else {
-            res.status(400).send({
+            return res.status(400).send({
                 message: `Cannot update Activity with id: ${id}. Maybe Activity not found.`
             });
         }

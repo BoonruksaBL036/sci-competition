@@ -8,7 +8,7 @@ const setUser = (user) => {
 
 const getLocalAccessToken = () => {
   const user = getUser();
-  return user?.accesstoken;
+  return user?.accessToken;
 };
 
 const removeUser = () => {

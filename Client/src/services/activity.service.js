@@ -1,5 +1,5 @@
 import api from "./api";
-const API_URL = import.meta.env.VITE_BASE_URL + "/activities";
+const API_URL = import.meta.env.VITE_BASE_URL + "/activity";
 
 const createActivity = async (data) => {
   return await api.post(API_URL + "/", data);

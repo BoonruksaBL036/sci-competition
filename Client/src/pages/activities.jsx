@@ -20,13 +20,15 @@ const Activities = () => {
     fetchData();
   }, []);
   return (
-    <div>
-      {activites.length === 0 && <p>ยังไม่มีกิจกรรม</p>}
-      {activites.length > 0 &&
-        activites.map((activity) => {
-          return <ActivityCard activity={activity} />;
-        })}
-    </div>
+    <>
+      <div className='flex flex-col gap-5'>
+        {activites.length === 0 && <p>ยังไม่มีกิจกรรม</p>}
+        {activites.length > 0 &&
+          activites.map((activity) => {
+            return <ActivityCard activity={activity} />;
+          })}
+      </div>
+    </>
   );
 };
 

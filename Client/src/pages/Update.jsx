@@ -1,24 +1,24 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useState,  useEffect } from "react";
+import { useNavigate,useParams } from "react-router";
 import Swal from "sweetalert2";
 import ActivityService from "../services/activity.service";
-const AddActivity = () => {
-  const [activity, setActivity] = useState({
-    name: "",
-    description: "",
-    type: "",
-    level: "",
-    team_size: 1,
-    date: Date.now(),
-    location: "",
-    reg_open: Date.now(),
-    reg_close: Date.now(),
-    contact_name: "",
-    contact_phone: "",
-    contact_email: "",
-    status: "draft",
-  });
+
+const Update = () => {
+  const [activity, setActivity] = useState([]);
   const navigate = useNavigate();
+  const {id} =  useParams();
+
+
+  useEffect(()=>{
+    const fetchData = async () =>  {
+        const response = await ActivityService.getActivityById(id);
+        setActivity(response.data)
+        return response
+    }
+    fetchData();
+  },[id])
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setActivity({ ...activity, [name]: value });
@@ -43,11 +43,11 @@ const AddActivity = () => {
   };
   const handleSubmit = async () => {
     try {
-      const newActivity = await ActivityService.createActivity(activity);
-      if (newActivity.status === 201) {
+      const newActivity = await ActivityService.updateActivityById(id,activity);
+      if (newActivity.status === 200) {
         Swal.fire({
-          title: "Add new activity",
-          text: "Add new activity successfully!",
+          title: "Update activity",
+          text: "Update activity successfully!",
           icon: "success",
         }).then(() => {
           resetForm();
@@ -56,7 +56,7 @@ const AddActivity = () => {
       }
     } catch (error) {
       Swal.fire({
-        title: "Add new activity",
+        title: "Update activity",
         text: error.message,
         icon: "error",
       });
@@ -64,7 +64,7 @@ const AddActivity = () => {
   };
   return (
     <div className="flex flex-col items-center space-y-4">
-      <h1 className="text-3xl font-bold mb-4">Add new Activity</h1>
+      <h1 className="text-3xl font-bold mb-4">Update Activity</h1>
       <label className="input input-bordered flex items-center gap-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -170,7 +170,7 @@ const AddActivity = () => {
           className="grow"
           placeholder="Date"
           name="date"
-          value={activity.date}
+          value={activity.date ? activity.date.slice(0, 16) : ''}
           onChange={handleChange}
         />
       </label>
@@ -206,7 +206,7 @@ const AddActivity = () => {
           className="grow"
           placeholder="Register Open Date"
           name="reg_open"
-          value={activity.reg_open}
+          value={activity.reg_open ? activity.reg_open.slice(0, 16) : ''}
           onChange={handleChange}
         />
       </label>
@@ -224,7 +224,7 @@ const AddActivity = () => {
           className="grow"
           placeholder="Register Close Date"
           name="reg_close"
-          value={activity.reg_close}
+          value={activity.reg_close ? activity.reg_close.slice(0, 16) : ''}
           onChange={handleChange}
         />
       </label>
@@ -307,4 +307,4 @@ const AddActivity = () => {
   );
 };
 
-export default AddActivity;
+export default Update;

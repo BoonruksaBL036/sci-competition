@@ -1,10 +1,46 @@
-const ActivityCard = ({ activity }) => {
+import ActivityService from "../services/activity.service";
+import { Link, useNavigate } from "react-router";
+import swal from "sweetalert2"
+
+const ActivityCard = ({ activity, fetchData }) => {
   const formatDate = (dateStr) =>
     new Date(dateStr).toLocaleDateString("th-TH", {
       year: "numeric",
       month: "long",
       day: "numeric",
     });
+
+    const navigate = useNavigate();
+
+  const handleDelete = async (id) => {
+    const result = await swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    })
+    // .then((result) => {
+      console.log(result);
+      if (result.isConfirmed) {
+        swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+        const response = await ActivityService.deleteActivityById(id);
+        fetchData();
+
+        if(response.status === 200) {
+          navigate(`/`);
+        }
+        return response;
+      }
+    // });
+  };
+
 
   return (
     <div
@@ -50,20 +86,34 @@ const ActivityCard = ({ activity }) => {
 
         <div className="divider"></div>
 
-        <div className="text-sm">
-          <p>
-            <strong>ติดต่อ:</strong> {activity.contact_name}
-          </p>
-          <p>📞 {activity.contact_phone}</p>
-          <p>
-            ✉️{" "}
-            <a
-              href={`mailto:${activity.contact_email}`}
-              className="text-blue-600 underline"
-            >
-              {activity.contact_email}
-            </a>
-          </p>
+        <div className="flex items-center justify-between">
+          <div className="text-sm">
+            <p>
+              <strong>ติดต่อ:</strong> {activity.contact_name}
+            </p>
+            <p>📞 {activity.contact_phone}</p>
+            <p>
+              ✉️{" "}
+              <a
+                href={`mailto:${activity.contact_email}`}
+                className="text-blue-600 underline"
+              >
+                {activity.contact_email}
+              </a>
+            </p>
+          </div>
+            <div className="flex justify-end gap-5">
+              <Link to={`/update/${activity.id}`} className="btn btn-warning">
+                  Edit
+                </Link>
+              <button
+                  onClick={() => handleDelete(activity.id)}
+                  className="btn btn-error"
+                >
+                  Delete
+                </button>
+                
+            </div>
         </div>
       </div>
     </div>

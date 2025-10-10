@@ -6,7 +6,7 @@ import Register from "../pages/Register.jsx";
 import NotFound from "../pages/NotFound.jsx";
 import AddActivity from "../pages/AddActivity.jsx";
 import Activities from "../pages/activities.jsx";
-import News from "../pages/News.jsx";
+import Update from "../pages/Update.jsx"
 
 const router = createBrowserRouter([
   {
@@ -18,22 +18,26 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "login",
+        path: "/login",
         element: <Login />,
       },
       {
-        path: "register",
+        path: "/register",
         element: <Register />,
       },
       {
-        path: "activities",
+        path: "/activities",
         element: <Activities />,
       },
-      { path: "add-activity", element: <AddActivity /> },
-      {
-        path: "news",
-        element: <News />,
+      { 
+        path: "/add-activity", 
+        element: <AddActivity /> 
       },
+      {
+        path: "/update/:id",
+        element: <Update/>
+
+      }
     ],
   },
   {
